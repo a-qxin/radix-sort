@@ -1,12 +1,31 @@
+/**
+ *
+ * File: radixSort.java
+ * @author Brenda Yau (byau@mail.sfsu.edu)
+ *
+ * Summary:
+ *      An Implementation of radix sort in Java using a Doubly-Linked List.
+ *      
+ *      The 10 positions in the array of LinkedLists are used for each
+ *      base 10 radix. In mathematical numerical systems, the radix/base is
+ *      the number of unique digits, including zero, used to represent
+ *      numbers in a positional numeral system.
+ *
+ *      For example, for the decimal system, the radix is ten because
+ *      it uses the ten digits from 0 through 9.
+ *
+ *      The following program reads the Numbers.txt file and sorts
+ *      the data using the Radix Sort algorithm.
+ */
+
 package com.company;
-// radix sort - brenda yau - data structures
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class MyFavoriteApp //radix sort
+public class radixSort
 {
     public static void main(String[] args) throws FileNotFoundException
     {
@@ -15,7 +34,7 @@ public class MyFavoriteApp //radix sort
         DoublyLinkedList<Integer> dll = new DoublyLinkedList<Integer>();
 
         //local; reading in csv/txt data ints by line
-        String csvFile = "/Users/brendayau/IdeaProjects/MyFavoriteApp.java/src/com/company/Numbers.txt";
+        String csvFile = "/Users/brendayau/IdeaProjects/radixSort.java/src/com/company/Numbers.txt";
         Scanner scanner = new Scanner(new File(csvFile));
         while(scanner.hasNext())
         {
@@ -70,8 +89,7 @@ public class MyFavoriteApp //radix sort
         return m;
     }
 
-    public static DoublyLinkedList<Integer> sort(DoublyLinkedList<Integer> a,
-                                                 ArrayList<DoublyLinkedList<Integer>> b)
+    public static DoublyLinkedList<Integer> sort(DoublyLinkedList<Integer> a, ArrayList<DoublyLinkedList<Integer>> b)
     {
         int alength = a.getLength();
         int m = greatestDigitLength(a);
@@ -192,20 +210,6 @@ class DoublyLinkedList<T>
         }
     }
 
-//	//assuming non empty ll
-//	public void replace(T data, int index)
-//	{
-//		Node<T> newNode = new Node<T>(data);
-//		if (index == 0)
-//		{
-//
-//		}
-////		newNode.next = this.getNode(index).next;
-////		newNode.previous = this.getNode(index).previous;
-////		this.getNode(index).next.previous = newNode;
-////		this.getNode(index).previous.next = newNode;
-//	}
-
     public Node<T> remove(Node<T> n)
     {
         Node<T> sucNode = n.next;
@@ -288,68 +292,6 @@ class DoublyLinkedList<T>
 
     public int getLength() { return size; } //returns num elements
 
-//	public static void main(String[] args)
-//	{
-//		System.out.println("-----tests for part one");
-//		DoublyLinkedList<Integer> dll = new DoublyLinkedList<Integer>();
-//		dll.append(1);
-//		dll.append(2);
-//		dll.append(3);
-//		System.out.print("print list after append: ");
-//		dll.print();
-//		dll.prepend(4);
-//		dll.prepend(0);
-//		System.out.print("print list after prepend: ");
-//		dll.print();
-//		System.out.println("length: " + dll.getLength());
-//		System.out.println("empty? " + dll.isEmpty());
-//		System.out.print("print reverse: ");
-//		dll.printReverse();
-//		System.out.println("searching for 5: "
-//				+ dll.search(5));
-//		System.out.println("searching for 4: "
-//				+ dll.search(4));
-//		dll.remove(dll.tail);
-//		System.out.print("print after removing tail: ");
-//		dll.print();
-//		dll.remove(dll.head);
-//		System.out.print("print after removing head: ");
-//		dll.print();
-//		System.out.print("print after insert after tail: ");
-//		dll.insertAfter(100, dll.tail);
-//		dll.print();
-//		System.out.print("print after insert after head.next: ");
-//		dll.insertAfter(1000, dll.head.next);
-//		dll.print();
-//
-//		System.out.println("-----tests for part two");
-//		Stack s = new Stack();
-//		s.push(0);
-//		s.push(1);
-//		s.push(2);
-//		s.push(3);
-//		s.push("string");
-//		System.out.print("stack after pushes: ");
-//		s.print();
-//		System.out.println("stack popped " + s.pop(0));
-//		System.out.println("stack peek: " + s.peek());
-//		System.out.println("stack empty? " + s.isEmpty());
-//		System.out.println("stack length: " + s.getLength());
-//
-//		System.out.println("-----tests for part three");
-//		Queue q = new Queue();
-//		q.push(100);
-//		q.push(200);
-//		q.push(300);
-//		System.out.print("queue after pushes: ");
-//		q.print();
-//		System.out.println("queue popped " + q.pop(200));
-//		System.out.println("queue peek " + q.peek());
-//		System.out.println("queue empty? " + q.isEmpty());
-//		System.out.println("queue length: " + q.getLength());
-//	}
-}
-
 class Stack extends DoublyLinkedList<Object>
 {
     void push(Object data) //inserts data on top (rightmost)
@@ -396,28 +338,3 @@ class Node<T> {
         previous = null;
     }
 }
-
-/*
-
-Implement Radix Sort
-as explained the text book in chapter 2.
-Use the Numbers.txt file in the DataFiles folder for the numbers to sort.
-Extra credit is available for processing alphabetic strings
-instead of just numbers.
-
-Specification:
-
-*  Using your Doubly-Linked list to create an dynamic array of
-*  Doubly-Linked lists (like lab1).
-*  The array should be 10 in length to satisfy the number of digits in Base10.
-
-*  The 10 positions in the array of LinkedList are used for each base 10 radix.
-*  In mathematical numeral systems, the radix or base is the number of
-*  unique digits, including zero, used to represent numbers in a
-*  positional numeral system.
-*  For example, for the decimal system the radix is ten,
-*  because it uses the ten digits from 0 through 9.
-
-* Read the Numbers.txt file and sort them using the Radix Sort algorithm.
-*
-*/
