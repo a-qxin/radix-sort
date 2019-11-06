@@ -1,0 +1,423 @@
+package com.company;
+// radix sort - brenda yau - data structures
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.Scanner;
+
+public class MyFavoriteApp //radix sort
+{
+    public static void main(String[] args) throws FileNotFoundException
+    {
+        ArrayList<DoublyLinkedList<Integer>> dynamicArray =
+                new ArrayList<DoublyLinkedList<Integer>>(10);
+        DoublyLinkedList<Integer> dll = new DoublyLinkedList<Integer>();
+
+        //local; reading in csv/txt data ints by line
+        String csvFile = "/Users/brendayau/IdeaProjects/MyFavoriteApp.java/src/com/company/Numbers.txt";
+        Scanner scanner = new Scanner(new File(csvFile));
+        while(scanner.hasNext())
+        {
+            dll.append(scanner.nextInt());
+        }
+        scanner.close();
+
+        //replacing null spaces in dynamic array with empty linked lists
+        for (int i = 0; i < 10; i++)
+        {
+            DoublyLinkedList<Integer> ll = new DoublyLinkedList<Integer>();
+            dynamicArray.add(ll);
+        }
+
+        //perform the radix sort
+        dll = sort(dll, dynamicArray);
+
+        //print sorted csv data
+        for (int i = 0; i < dll.getLength(); i++)
+        {
+            System.out.print(dll.get(i) + " ");
+            if (i % 30 == 0) //for one-page printing purposes
+                System.out.println();
+        }
+    }
+
+    //returns number of digits in value.
+    public static int getDigitLength(int num)
+    {
+        if (num == 0)
+            return 1;
+        int numDigits = 0;
+        while (num != 0)
+        {
+            numDigits++;
+            num/=10;
+        }
+        return numDigits;
+    }
+
+    //returns greatest number of digits in array.
+    public static int greatestDigitLength(
+            DoublyLinkedList<Integer> a)
+    {
+        int m = 0;
+        for (int i = 0; i < a.getLength(); i++)
+        {
+            int c = getDigitLength(a.get(i));
+            if(c > m)
+                m = c;
+        }
+        return m;
+    }
+
+    public static DoublyLinkedList<Integer> sort(DoublyLinkedList<Integer> a,
+                                                 ArrayList<DoublyLinkedList<Integer>> b)
+    {
+        int alength = a.getLength();
+        int m = greatestDigitLength(a);
+        int pow10 = 1;
+        for (int digitIndex = 0; digitIndex < m; digitIndex++)
+        {
+            //test print
+            //System.out.println("\n----- " + digitIndex + " digit index");
+            for (int i = 0; i < alength; i++)
+            {
+                int bucketIndex = Math.abs(a.get(i) / pow10) % 10;
+                //test print:
+                //System.out.println("bucket index = " + bucketIndex);
+                b.get(bucketIndex).append(a.get(i));
+            }
+
+            DoublyLinkedList<Integer> c = new DoublyLinkedList<Integer>();
+
+            for (int i = 0; i < 10; i++)
+            {
+                int bucketSz = b.get(i).getLength();
+                for (int j = 0; j < bucketSz; j++)
+                    c.append(b.get(i).get(j));
+            }
+
+            a = new DoublyLinkedList<Integer>();
+            for(int i = 0; i < c.getLength(); i++)
+                a.append(c.get(i));
+
+//			//test: print all buckets
+//			System.out.println("print all buckets:");
+//			for (int i = 0; i < b.size(); i++)
+//			{
+//				System.out.print(i + " - " + b.get(i) + " - ");
+//				b.get(i).print();
+//			}
+
+            //increments power of 10 for bucket calculation
+            pow10 *= 10;
+
+            //clears all buckets for next digit index (next loop)
+            b.clear();
+            for (int i = 0; i < 10; i++)
+            {
+                DoublyLinkedList<Integer> ll = new DoublyLinkedList<Integer>();
+                b.add(ll);
+            }
+
+            //test print of array after current digit loop
+//			System.out.println("sorted a: ");
+//			for (int i = 0; i < a.getLength(); i++)
+//			{
+//				System.out.print(a.get(i) + " ");
+//			}
+        }
+        return a;
+    }
+}
+
+class DoublyLinkedList<T>
+{
+    protected Node<T> head = null;
+    protected Node<T> tail = null;
+    private int size = 0;
+
+    public void append(T data)	//inserts x at tail
+    {
+        //System.out.println("appending " + data);
+        Node<T> newNode = new Node<T>(data);
+        if (head == null) // list empty
+            head = tail = newNode;
+        else
+        {
+            tail.next = newNode;
+            newNode.previous = tail;
+            tail = newNode;
+        }
+        size++;
+    }
+
+    public void prepend(T data) //inserts x at head
+    {
+        Node<T> newNode = new Node<T>(data);
+        if (head == null)
+            head = tail = newNode;
+        else
+        {
+            newNode.next = head;
+            head.previous = newNode;
+            head = newNode;
+        }
+        size++;
+    }
+
+    public void insertAfter(T data, Node<T> prev) //inserts x after w
+    {
+        Node<T> newNode = new Node<T>(data);
+        if (prev == null)
+        {
+            System.out.println("Cannot add after null");
+            return;
+        }
+        else if (head == null)
+            head = tail = newNode;
+        else if (prev == tail)
+        {
+            tail.next = newNode;
+            newNode.previous = tail;
+            tail = newNode;
+        }
+        else
+        {
+            Node<T> sucNode = prev.next;
+            newNode.next = sucNode;
+            newNode.previous = prev;
+            prev.next = newNode;
+            sucNode.previous = newNode;
+        }
+    }
+
+//	//assuming non empty ll
+//	public void replace(T data, int index)
+//	{
+//		Node<T> newNode = new Node<T>(data);
+//		if (index == 0)
+//		{
+//
+//		}
+////		newNode.next = this.getNode(index).next;
+////		newNode.previous = this.getNode(index).previous;
+////		this.getNode(index).next.previous = newNode;
+////		this.getNode(index).previous.next = newNode;
+//	}
+
+    public Node<T> remove(Node<T> n)
+    {
+        Node<T> sucNode = n.next;
+        Node<T> predNode = n.previous;
+
+        if (sucNode != null)
+            sucNode.previous = predNode;
+        if (predNode != null)
+            predNode.next = sucNode;
+        if(n == head)
+            head = sucNode;
+        if(n == tail)
+            tail = predNode;
+
+        size--;
+        return n;
+    }
+
+    public Node<T> search(T num) //returns node if found, else null
+    {
+        Node<T> temp = head;
+        while (null != temp.next && temp.data != num)
+            temp = temp.next;
+        if (temp.data == num)
+            return temp;
+        return null;
+    }
+
+    public T get(int index)
+    {
+        Node<T> temp = head;
+        for(int i = 0; i < index; i++)
+        {
+            temp = temp.next;
+        }
+        return temp.data;
+    }
+    public Node<T> getNode(int index)
+    {
+        Node<T> temp = head;
+        for(int i = 0; i< index; i++)
+        {
+            temp = temp.next;
+        }
+        return temp;
+    }
+
+    public void print()
+    {
+        printRecursive(head);
+        System.out.println("");
+    }
+    public void printRecursive(Node<T> n) //recursively print items in order
+    {
+        if (n != null)
+        {
+            System.out.print(n.data + " ");
+            printRecursive(n.next);
+        }
+    }
+
+    public void printReverse()
+    {
+        printReverseRecursive(tail);
+        System.out.println("");
+    }
+    public void printReverseRecursive(Node<T> n) //print items in reverse
+    {
+        if (n != null)
+        {
+            System.out.print(n.data + " ");
+            printReverseRecursive(n.previous);
+        }
+    }
+
+    public Boolean isEmpty() //returns bool true if empty else false
+    {
+        return head == null;
+    }
+
+    public int getLength() { return size; } //returns num elements
+
+//	public static void main(String[] args)
+//	{
+//		System.out.println("-----tests for part one");
+//		DoublyLinkedList<Integer> dll = new DoublyLinkedList<Integer>();
+//		dll.append(1);
+//		dll.append(2);
+//		dll.append(3);
+//		System.out.print("print list after append: ");
+//		dll.print();
+//		dll.prepend(4);
+//		dll.prepend(0);
+//		System.out.print("print list after prepend: ");
+//		dll.print();
+//		System.out.println("length: " + dll.getLength());
+//		System.out.println("empty? " + dll.isEmpty());
+//		System.out.print("print reverse: ");
+//		dll.printReverse();
+//		System.out.println("searching for 5: "
+//				+ dll.search(5));
+//		System.out.println("searching for 4: "
+//				+ dll.search(4));
+//		dll.remove(dll.tail);
+//		System.out.print("print after removing tail: ");
+//		dll.print();
+//		dll.remove(dll.head);
+//		System.out.print("print after removing head: ");
+//		dll.print();
+//		System.out.print("print after insert after tail: ");
+//		dll.insertAfter(100, dll.tail);
+//		dll.print();
+//		System.out.print("print after insert after head.next: ");
+//		dll.insertAfter(1000, dll.head.next);
+//		dll.print();
+//
+//		System.out.println("-----tests for part two");
+//		Stack s = new Stack();
+//		s.push(0);
+//		s.push(1);
+//		s.push(2);
+//		s.push(3);
+//		s.push("string");
+//		System.out.print("stack after pushes: ");
+//		s.print();
+//		System.out.println("stack popped " + s.pop(0));
+//		System.out.println("stack peek: " + s.peek());
+//		System.out.println("stack empty? " + s.isEmpty());
+//		System.out.println("stack length: " + s.getLength());
+//
+//		System.out.println("-----tests for part three");
+//		Queue q = new Queue();
+//		q.push(100);
+//		q.push(200);
+//		q.push(300);
+//		System.out.print("queue after pushes: ");
+//		q.print();
+//		System.out.println("queue popped " + q.pop(200));
+//		System.out.println("queue peek " + q.peek());
+//		System.out.println("queue empty? " + q.isEmpty());
+//		System.out.println("queue length: " + q.getLength());
+//	}
+}
+
+class Stack extends DoublyLinkedList<Object>
+{
+    void push(Object data) //inserts data on top (rightmost)
+    {
+        append(data);
+    }
+
+    Node<Object> pop(Object data) //returns and removes top item (tail)
+    {
+        return remove(tail);
+    }
+
+    Node<Object> peek() //returns but doesn't remove top
+    {
+        return tail;
+    }
+}
+
+class Queue extends DoublyLinkedList<Object>
+{
+    void push(Object data) //inserts data at front (leftmost)
+    {
+        prepend(data);
+    }
+
+    Node<Object> pop(Object data) //returns and removes front item (head)
+    {
+        return remove(head);
+    }
+
+    Node<Object> peek() //returns but does not remove head
+    {
+        return head;
+    }
+}
+
+class Node<T> {
+    T data;
+    Node<T> previous, next;
+
+    public Node(T data) {
+        this.data = data;
+        next = null;
+        previous = null;
+    }
+}
+
+/*
+
+Implement Radix Sort
+as explained the text book in chapter 2.
+Use the Numbers.txt file in the DataFiles folder for the numbers to sort.
+Extra credit is available for processing alphabetic strings
+instead of just numbers.
+
+Specification:
+
+*  Using your Doubly-Linked list to create an dynamic array of
+*  Doubly-Linked lists (like lab1).
+*  The array should be 10 in length to satisfy the number of digits in Base10.
+
+*  The 10 positions in the array of LinkedList are used for each base 10 radix.
+*  In mathematical numeral systems, the radix or base is the number of
+*  unique digits, including zero, used to represent numbers in a
+*  positional numeral system.
+*  For example, for the decimal system the radix is ten,
+*  because it uses the ten digits from 0 through 9.
+
+* Read the Numbers.txt file and sort them using the Radix Sort algorithm.
+*
+*/
