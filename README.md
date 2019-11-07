@@ -1,5 +1,5 @@
 # radix-sort
 
-Implementing the Radix Sort algorithm in Java using a Doubly-Linked LIst.
+Implementing the Radix Sort algorithm in Java using a Doubly-Linked List.
 
-###### updated 11/06/19
+###### updated 11/07/19
