@@ -1,10 +1,14 @@
 /**
  *
- * File: radixSort.java
- * @author Brenda Yau (byau@mail.sfsu.edu)
- *
+ * File: radix-sort.java
+ * @author github@a-qxin
+ * @since 2019-08-30
+ * 
  * Summary:
  *      An Implementation of radix sort in Java using a Doubly-Linked List.
+ * 
+ *      Values in the list are sorted from least significant digit to
+ *      most significant digit.
  *      
  *      The 10 positions in the array of LinkedLists are used for each
  *      base 10 radix. In mathematical numerical systems, the radix/base is
@@ -17,6 +21,11 @@
  *      The following program reads the Numbers.txt file and sorts
  *      the data using the Radix Sort algorithm.
  */
+
+// TODO: rename ambivalent variables
+// TODO: add separate output .txt file
+// TODO: add [public] test function; replace debug
+// TODO: add separate function read in file
 
 package com.company;
 
@@ -33,7 +42,7 @@ public class radixSort
                 new ArrayList<DoublyLinkedList<Integer>>(10);
         DoublyLinkedList<Integer> dll = new DoublyLinkedList<Integer>();
 
-        //local; reading in csv/txt data ints by line
+        //local path; reading in csv/txt data ints by line
         String csvFile = "/Users/brendayau/IdeaProjects/radixSort.java/src/com/company/Numbers.txt";
         Scanner scanner = new Scanner(new File(csvFile));
         while(scanner.hasNext())
@@ -61,7 +70,11 @@ public class radixSort
         }
     }
 
-    //returns number of digits in value.
+    /**
+     * Finds and returns number of digits in a given value.
+     * @param num is the given value.
+     * @return int number of digits
+     */
     public static int getDigitLength(int num)
     {
         if (num == 0)
@@ -75,9 +88,13 @@ public class radixSort
         return numDigits;
     }
 
-    //returns greatest number of digits in array.
-    public static int greatestDigitLength(
-            DoublyLinkedList<Integer> a)
+    /**
+     *  Takes a list and finds the value with the greatest number of digits
+     *  using getDigitLength(). Returns this value's number of digits.
+     *  @param a doubly-linked list of integer values.
+     *  @return int number of digits of the value with the greatest digit length in the list.
+     */
+    public static int greatestDigitLength(DoublyLinkedList<Integer> a)
     {
         int m = 0;
         for (int i = 0; i < a.getLength(); i++)
@@ -89,6 +106,12 @@ public class radixSort
         return m;
     }
 
+    /**
+     * Performs the radix sort using greatestDigitLength().
+     * @param a unsorted doubly-linked list of integers
+     * @param b an ArrayList of empty doubly linked lists representing digit place (10's place)
+     * @return DoublyLinkedList<Integer> of the final sorted list
+     */
     public static DoublyLinkedList<Integer> sort(DoublyLinkedList<Integer> a, ArrayList<DoublyLinkedList<Integer>> b)
     {
         int alength = a.getLength();
@@ -155,11 +178,10 @@ class DoublyLinkedList<T>
     protected Node<T> tail = null;
     private int size = 0;
 
-    public void append(T data)	//inserts x at tail
+    public void append(T data)
     {
-        //System.out.println("appending " + data);
         Node<T> newNode = new Node<T>(data);
-        if (head == null) // list empty
+        if (head == null)
             head = tail = newNode;
         else
         {
@@ -170,7 +192,7 @@ class DoublyLinkedList<T>
         size++;
     }
 
-    public void prepend(T data) //inserts x at head
+    public void prepend(T data)
     {
         Node<T> newNode = new Node<T>(data);
         if (head == null)
@@ -184,7 +206,7 @@ class DoublyLinkedList<T>
         size++;
     }
 
-    public void insertAfter(T data, Node<T> prev) //inserts x after w
+    public void insertAfter(T data, Node<T> prev)
     {
         Node<T> newNode = new Node<T>(data);
         if (prev == null)
@@ -228,7 +250,7 @@ class DoublyLinkedList<T>
         return n;
     }
 
-    public Node<T> search(T num) //returns node if found, else null
+    public Node<T> search(T num)
     {
         Node<T> temp = head;
         while (null != temp.next && temp.data != num)
@@ -247,6 +269,7 @@ class DoublyLinkedList<T>
         }
         return temp.data;
     }
+
     public Node<T> getNode(int index)
     {
         Node<T> temp = head;
@@ -262,7 +285,8 @@ class DoublyLinkedList<T>
         printRecursive(head);
         System.out.println("");
     }
-    public void printRecursive(Node<T> n) //recursively print items in order
+
+    public void printRecursive(Node<T> n)
     {
         if (n != null)
         {
@@ -276,7 +300,7 @@ class DoublyLinkedList<T>
         printReverseRecursive(tail);
         System.out.println("");
     }
-    public void printReverseRecursive(Node<T> n) //print items in reverse
+    public void printReverseRecursive(Node<T> n)
     {
         if (n != null)
         {
@@ -285,26 +309,29 @@ class DoublyLinkedList<T>
         }
     }
 
-    public Boolean isEmpty() //returns bool true if empty else false
+    public Boolean isEmpty()
     {
         return head == null;
     }
 
-    public int getLength() { return size; } //returns num elements
+    public int getLength() 
+    { 
+        return size; 
+    }
 
 class Stack extends DoublyLinkedList<Object>
 {
-    void push(Object data) //inserts data on top (rightmost)
+    void push(Object data)
     {
         append(data);
     }
 
-    Node<Object> pop(Object data) //returns and removes top item (tail)
+    Node<Object> pop(Object data)
     {
         return remove(tail);
     }
 
-    Node<Object> peek() //returns but doesn't remove top
+    Node<Object> peek()
     {
         return tail;
     }
@@ -312,23 +339,24 @@ class Stack extends DoublyLinkedList<Object>
 
 class Queue extends DoublyLinkedList<Object>
 {
-    void push(Object data) //inserts data at front (leftmost)
+    void push(Object data)
     {
         prepend(data);
     }
 
-    Node<Object> pop(Object data) //returns and removes front item (head)
+    Node<Object> pop(Object data)
     {
         return remove(head);
     }
 
-    Node<Object> peek() //returns but does not remove head
+    Node<Object> peek()
     {
         return head;
     }
 }
 
-class Node<T> {
+class Node<T> 
+{
     T data;
     Node<T> previous, next;
 
